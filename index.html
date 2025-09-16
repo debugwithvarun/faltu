@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeTag - Cattle Lifecycle Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h2>🏷️ LifeTag</h2>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn--outline" onclick="showAuth('login')">Login</button>
+                    <button class="btn btn--primary" onclick="showAuth('register')">Register</button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Complete Cattle Lifecycle Management</h1>
+                <p class="hero-subtitle">Track, monitor, and manage your cattle from birth to end-of-cycle with advanced RFID technology</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">3,567</span>
+                        <span class="stat-label">Cattle Tracked</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">34%</span>
+                        <span class="stat-label">Accident Reduction</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">25</span>
+                        <span class="stat-label">Active Shelters</span>
+                    </div>
+                </div>
+                <button class="btn btn--primary btn--lg" onclick="showAuth('register')">Get Started</button>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2>Comprehensive Management Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3>Birth Registration</h3>
+                        <p>Register cattle with unique RFID tags and QR codes for complete traceability</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💉</div>
+                        <h3>Vaccination Tracking</h3>
+                        <p>Schedule and monitor vaccination programs with automated reminders</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🥛</div>
+                        <h3>Productivity Monitoring</h3>
+                        <p>Track milk yield, health scores, and breeding cycles</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏠</div>
+                        <h3>Shelter Management</h3>
+                        <p>Manage cattle shelters and end-of-cycle care facilities</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Analytics Dashboard</h3>
+                        <p>Get insights with comprehensive reports and data visualization</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Ownership Transfer</h3>
+                        <p>Track ownership changes and maintain complete audit trails</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="auth-title">Login</h2>
+                <button class="modal-close" onclick="hideAuth()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="auth-form">
+                    <div class="form-group" id="name-group" style="display: none;">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-group" id="role-group" style="display: none;">
+                        <label class="form-label" for="role">Role</label>
+                        <select id="role" class="form-control">
+                            <option value="farmer">Farmer</option>
+                            <option value="veterinarian">Veterinarian</option>
+                            <option value="shelter_manager">Shelter Manager</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width" id="auth-submit">Login</button>
+                </form>
+                <p class="auth-switch">
+                    <span id="auth-switch-text">Don't have an account?</span>
+                    <a href="#" id="auth-switch-link" onclick="toggleAuthMode()">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="page hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h2 class="app-logo">🏷️ LifeTag</h2>
+                <nav class="header-nav">
+                    <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
+                    <button class="nav-btn" onclick="showSection('cattle')">Cattle</button>
+                    <button class="nav-btn" onclick="showSection('vaccinations')">Vaccinations</button>
+                    <button class="nav-btn" onclick="showSection('productivity')">Productivity</button>
+                    <button class="nav-btn" onclick="showSection('shelters')">Shelters</button>
+                    <button class="nav-btn" onclick="showSection('analytics')">Analytics</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <span id="user-name">Rajesh Kumar</span>
+                    <span class="user-role" id="user-role">Farmer</span>
+                    <button class="btn btn--outline btn--sm" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="app-section active">
+            <div class="container">
+                <h1>Dashboard</h1>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">🐄</div>
+                        <div class="stat-info">
+                            <h3 id="total-cattle">0</h3>
+                            <p>Total Cattle</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💉</div>
+                        <div class="stat-info">
+                            <h3 id="vaccinated-month">0</h3>
+                            <p>Vaccinated This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🥛</div>
+                        <div class="stat-info">
+                            <h3 id="avg-milk-yield">0L</h3>
+                            <p>Avg Milk Yield</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏠</div>
+                        <div class="stat-info">
+                            <h3 id="total-shelters">0</h3>
+                            <p>Active Shelters</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="dashboard-panel">
+                        <h2>Recent Activities</h2>
+                        <div id="recent-activities" class="activity-list">
+                            <!-- Activities will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="dashboard-panel">
+                        <h2>Quick Actions</h2>
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="showSection('cattle'); showAddCattleForm()">
+                                <div class="action-icon">➕</div>
+                                <span>Register Cattle</span>
+                            </button>
+                            <button class="action-btn" onclick="showSection('vaccinations'); showVaccinationForm()">
+                                <div class="action-icon">💉</div>
+                                <span>Log Vaccination</span>
+                            </button>
+                            <button class="action-btn" onclick="showSection('productivity'); showProductivityForm()">
+                                <div class="action-icon">📊</div>
+                                <span>Record Productivity</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cattle Section -->
+        <section id="cattle-section" class="app-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Cattle Management</h1>
+                    <button class="btn btn--primary" onclick="showAddCattleForm()">➕ Register New Cattle</button>
+                </div>
+                
+                <div class="cattle-filters">
+                    <input type="text" id="cattle-search" class="form-control" placeholder="Search cattle..." onkeyup="filterCattle()">
+                    <select id="status-filter" class="form-control" onchange="filterCattle()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="pregnant">Pregnant</option>
+                        <option value="sick">Sick</option>
+                        <option value="end_of_cycle">End of Cycle</option>
+                    </select>
+                </div>
+
+                <div id="cattle-grid" class="cattle-grid">
+                    <!-- Cattle cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Vaccinations Section -->
+        <section id="vaccinations-section" class="app-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Vaccination Management</h1>
+                    <button class="btn btn--primary" onclick="showVaccinationForm()">💉 Log Vaccination</button>
+                </div>
+                
+                <div class="vaccination-tabs">
+                    <button class="tab-btn active" onclick="showVaccinationTab('schedule')">Schedule</button>
+                    <button class="tab-btn" onclick="showVaccinationTab('history')">History</button>
+                    <button class="tab-btn" onclick="showVaccinationTab('due')">Due Soon</button>
+                </div>
+
+                <div id="vaccination-content">
+                    <!-- Vaccination content will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Productivity Section -->
+        <section id="productivity-section" class="app-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Productivity Monitoring</h1>
+                    <button class="btn btn--primary" onclick="showProductivityForm()">📊 Record Data</button>
+                </div>
+                
+                <div class="productivity-overview">
+                    <div class="productivity-chart">
+                        <h3>Milk Yield Trends</h3>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="milk-yield-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="productivity-stats">
+                        <h3>Performance Metrics</h3>
+                        <div class="metric-item">
+                            <span class="metric-label">Average Daily Yield</span>
+                            <span class="metric-value">23.8L</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Top Performer</span>
+                            <span class="metric-value">Ganga (LT001)</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Health Score</span>
+                            <span class="metric-value">8.5/10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="productivity-records" class="productivity-records">
+                    <!-- Productivity records will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Shelters Section -->
+        <section id="shelters-section" class="app-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Shelter Management</h1>
+                    <button class="btn btn--primary" onclick="showShelterForm()">🏠 Add Shelter</button>
+                </div>
+                
+                <div id="shelters-grid" class="shelters-grid">
+                    <!-- Shelter cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics-section" class="app-section">
+            <div class="container">
+                <h1>Analytics & Insights</h1>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Cattle Distribution</h3>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="cattle-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Vaccination Coverage</h3>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="vaccination-coverage-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Monthly Productivity</h3>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="monthly-productivity-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Shelter Capacity</h3>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="shelter-capacity-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Forms Modal -->
+    <div id="forms-modal" class="modal hidden">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="form-title">Form</h2>
+                <button class="modal-close" onclick="hideFormsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="form-container">
+                <!-- Forms will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cattle Detail Modal -->
+    <div id="cattle-detail-modal" class="modal hidden">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="cattle-detail-title">Cattle Details</h2>
+                <button class="modal-close" onclick="hideCattleDetail()">&times;</button>
+            </div>
+            <div class="modal-body" id="cattle-detail-content">
+                <!-- Cattle details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" class="toast hidden">
+        <div class="toast-content">
+            <span id="toast-message">Message</span>
+            <button class="toast-close" onclick="hideNotification()">&times;</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
